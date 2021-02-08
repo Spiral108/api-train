@@ -14,7 +14,7 @@ route.get(
     const logger: Logger = Container.get('logger');
     logger.debug('Calling GET /image endpoint');
     try {
-      res.sendFile("../../views/index.html");
+      res.send("../../views/index.html");
     } catch (e) {
       return next(e);
     }
