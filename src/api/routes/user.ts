@@ -9,6 +9,19 @@ import ApiResponse, { HTTPStatusCode } from '../../helpers/ApiResponse';
 const route = Router();
 
 route.get(
+  '/image',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const logger: Logger = Container.get('logger');
+    logger.debug('Calling GET /image endpoint');
+    try {
+      res.sendFile("../../views/index.html");
+    } catch (e) {
+      return next(e);
+    }
+  }
+);
+
+route.get(
   '/',
   isAuth,
   checkRole('admin'),
