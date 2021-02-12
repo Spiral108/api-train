@@ -5,6 +5,9 @@ import { Container } from 'typedi';
 import { isAuth, attachUser, checkRole } from '../middlewares';
 import UserService from '../services/UserService';
 import ApiResponse, { HTTPStatusCode } from '../../helpers/ApiResponse';
+import path from 'path'
+import multer from 'multer';
+import express from 'express';
 
 const route = Router();
 
@@ -20,6 +23,36 @@ route.get(
     }
   }
 );
+
+// route.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null,path.join(__dirname+'../../../uploads'));
+  },
+  filename: (req, file, cb) => {
+      console.log(file);
+      cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+      cb(null, true);
+  } else {
+      cb(null, false);
+  }
+}
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+route.post('/imageupload', upload.single('image'), (req, res, next) => {
+  try {
+    res.redirect('/image');
+  } catch (error) {
+      console.error(error);
+  }
+});
 
 route.get(
   '/',
