@@ -7,7 +7,7 @@ import UserService from '../services/UserService';
 import ApiResponse, { HTTPStatusCode } from '../../helpers/ApiResponse';
 import path from 'path'
 import multer from 'multer';
-import express from 'express';
+import fs from 'fs'
 
 const route = Router();
 
@@ -28,7 +28,9 @@ route.get(
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null,path.join(__dirname+'../../../uploads'));
+    const checkPath = path.join(__dirname+'../../../uploads');
+    fs.mkdirSync(checkPath, { recursive: true })
+    cb(null,checkPath);
   },
   filename: (req, file, cb) => {
       console.log(file);
